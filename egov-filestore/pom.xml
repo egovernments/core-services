@@ -8,7 +8,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.6.RELEASE</version>
-		<relativePath></relativePath>
+		<relativePath/>
 	</parent>
 	<groupId>org.egov</groupId>
 	<artifactId>egov-filestore</artifactId>
@@ -38,7 +38,7 @@
 		<dependency>
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
-			<version>7.0.2</version>
+			<version>8.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.postgresql</groupId>
@@ -196,7 +196,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
