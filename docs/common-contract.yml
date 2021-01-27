@@ -286,4 +286,124 @@ definitions:
         type: integer
         format: int64
         description: epoch of the time object is last modified
-        
+
+
+  ProcessInstance:
+    type: object
+    description: A Object holds the basic data for a Trade License
+    properties:
+      id:
+        type: string
+        minLength: 2
+        maxLength: 64
+        description: Unique process instance id (UUID)
+        readOnly: true
+      tenantId:
+        type: string
+        description: Unique Identifier of ULB
+        maxLength: 128
+        minLength: 2
+      businessService:
+        type: string
+        description: Business service key.
+        maxLength: 256
+        minLength: 2
+      businessId:
+        type: string
+        description: | 
+         Business id is a unique identifier of a task. eg(Propertyid, 
+         TLid, ServiceRequestid) 
+        maxLength: 64
+        minLength: 2
+      action:
+        type: string
+        description: Actions are define for each business service.
+        maxLength: 64
+        minLength: 2
+      state:
+        type: string
+        description: Status will be populate by efengine for each action,
+         if it is configured. 
+        maxLength: 64
+        minLength: 2
+        readOnly: true
+      comment:
+        type: string
+        description: consumer can pass the comment on each action.
+        maxLength: 64
+        minLength: 2
+      documents:
+        type: array
+        description: Documents can be attached with each of the action.
+        items:
+          $ref: '#/definitions/Document'
+      assigner:
+        type: object
+        $ref: 'https://raw.githubusercontent.com/egovernments/egov-services/master/docs/egov-user/contracts/v1-0-0.yml#/definitions/User'
+        readOnly: true
+      assignes:
+        type: array
+        items:
+         $ref: 'https://raw.githubusercontent.com/egovernments/egov-services/master/docs/egov-user/contracts/v1-0-0.yml#/definitions/User'
+      nextActions:
+        type: array
+        description: Wf will return next possible action based on .
+        items:
+          type: string
+        readOnly: true
+      sla:
+        type: integer
+        format: int64
+        description: Date from when license is valid as epoch.
+      currentStatus:
+        type: string
+        description: Status after action performed
+      previousStatus:
+        type: string
+        description: Status before action performed
+      entity:
+        type: object
+      auditDetails:
+        $ref: 'https://raw.githubusercontent.com/egovernments/egov-services/master/docs/common/contracts/v1-0-0.yml#/definitions/AuditDetails'
+    required:
+      - businessService
+      - action
+      - businessId
+      - tenantId
+
+
+  Document:
+    type: object
+    description: A Object holds the basic data for a Trade License
+    properties:
+      id:
+        type: string
+        description: State Unique Identifier uuid
+        maxLength: 64
+        minLength: 2
+      tenantId:
+        type: string
+        description: Unique Identifier of ULB
+        maxLength: 128
+        minLength: 2
+      documentType:
+        type: string
+        minLength: 2
+        maxLength: 64
+        description: 'The type of document like pancard, adhar card, Driving License etc.'
+      fileStoreId:
+        type: string
+        minLength: 2
+        maxLength: 64
+        description: Unique file store id of uploaded document.
+      documentUid:
+        type: string
+        minLength: 2
+        maxLength: 64
+        description: 'document number(eg.Pan number, aadhar number).'
+      auditDetails:
+        $ref: 'https://raw.githubusercontent.com/egovernments/egov-services/master/docs/common/contracts/v1-0-0.yml#/definitions/AuditDetails'
+    required:
+      - tenantId
+      - documentType
+      - fileStoreId
