@@ -8,7 +8,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.2.6.RELEASE</version>
-		<relativePath></relativePath>
+		<relativePath/>
 	</parent>
 	<groupId>org.egov</groupId>
 	<artifactId>egov-filestore</artifactId>
@@ -81,12 +81,12 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.11.289</version>
+			<version>1.11.882</version>
 		</dependency>
 		<dependency>
 			<groupId>com.microsoft.azure</groupId>
 			<artifactId>azure-storage</artifactId>
-			<version>5.0.0</version>
+			<version>8.0.0</version>
 		</dependency>
 		<dependency>
 			<groupId>org.imgscalr</groupId>
@@ -196,7 +196,7 @@
 										</goals>
 									</pluginExecutionFilter>
 									<action>
-										<ignore></ignore>
+										<ignore/>
 									</action>
 								</pluginExecution>
 							</pluginExecutions>
