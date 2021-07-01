@@ -4,7 +4,7 @@ from entity_recognition import *
 import requests
 from googletrans import Translator
 from fuzzywuzzy import fuzz
-#from flask_ngrok import run_with_ngrok
+
 from city_extract import find_city
 import time
 
@@ -19,30 +19,28 @@ languages={
     'marathi': 'mr', 'gujarati':'gu', 'punjabi':'pa',  'kannada':'kn', 'tamil':'ta', 'malayalam': 'ml', 'telugu':'te', 'bengali': 'bn', 'bangla': 'bn'
 
     }
-def close_to(a):
-    a=a.lower()
+def close_to(entry):
+    entry=entry.lower()
     for i in languages.keys():
-        if fuzz.ratio(i,a)>=75:
+        if fuzz.ratio(i,entry)>=75:
             return i
     return 'english'
 
     
 
 app_vf = Flask(__name__)
-#run_with_ngrok(app_vf)
-
 
 @app_vf.route('/', methods=['POST'])
 def reply():
-    request_data=request.get_json()
+    requestData=request.get_json()
     inp=""
 
-    if request_data["payload"]["type"]=="audio" :
-        audio_url=request_data["payload"]["payload"]["url"]
-        r=requests.get(audio_url, allow_redirects=True)
-        open('voice_message.ogg', 'wb').write(r.content)
+    if requestData["payload"]["type"]=="audio" :
+        audioUrl=requestData["payload"]["payload"]["url"]
+        getAudioFile=requests.get(audioUrl, allow_redirects=True)
+        open('voice_message.ogg', 'wb').write(getAudioFile.content)
         sound=AudioSegment.from_ogg("voice_message.ogg")
-        #sound=AudioSegment.from_ogg("https://filemanager.gupshup.io/fm/wamedia/demobot1/e63068ef-6617-41ac-aeb5-74d3c8217f82")
+        
         sound.export("voice_message.wav", format="wav")
 
         AUDIO_FILE = "voice_message.wav"
@@ -51,17 +49,14 @@ def reply():
             audio = r.record(source)
             inp=r.recognize_google(audio)
     else:
-        inp=request_data["payload"]["payload"]["text"]
+        inp=requestData["payload"]["payload"]["text"]
 
-    destination=request_data["payload"]["source"]
+    destination=requestData["payload"]["source"]
 
     default = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=Please%20mention%20a%20category&src.name=chatbotpayment'
 
     payload= default
     
-    #inp=translator.translate(inp,dest='en')
-    #src1=inp.src
-    #inp=inp.text
     inp=inp.lower()
     
 
@@ -87,95 +82,73 @@ def reply():
         
 
     inp=translator.translate(inp,dest='en')
-    src1=inp.src
+    sourceLanguage=inp.src
     inp=inp.text
-    res= process(inp)
+    result= process(inp)
     
-    c=res.split()
+    resultArray=result.split()
 
-    if c[0]=="Welcome" :
+    if resultArray[0]=="Welcome" :
         
         k=payload.index("&message")
-        payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment"
+        payload=payload[0:k]+"&message="+translator.translate(result,dest=sourceLanguage).text+ "&src.name=chatbotpayment"
         response = requests.request("POST", url, headers=headers, data = payload)
         
         
         k=payload.index("&message")
-        payload=payload[0:k]+"&message="+translator.translate("Please enter your city name\n",dest=src1).text+ "&src.name=chatbotpayment"
-        #response = requests.request("POST", url, headers=headers, data = payload)
-
-        
-            
-        
-        
+        payload=payload[0:k]+"&message="+translator.translate("Please enter your city name\n",dest=sourceLanguage).text+ "&src.name=chatbotpayment"
+  
     elif c[0]=='Showing':
-        if 'water' in c:
+        if 'water' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Water_Sewerage_receipts.pdf%22%7D&src.name=chatbotpayment'
 
-        elif 'trade' in c:
+        elif 'trade' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Trade_license_receipts.pdf%22%7D&src.name=chatbotpayment'
 
-        elif 'property' in c:
+        elif 'property' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Property_Tax_receipts.pdf%22%7D&src.name=chatbotpayment'
 
         else:
             
             k=payload.index("&message")
-            payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment" 
+            payload=payload[0:k]+"&message="+translator.translate(result,dest=sourceLanguage).text+ "&src.name=chatbotpayment" 
 
-    elif c[0]=='Visit':
+    elif resultArray[0]=='Visit':
         
         
         
         k=payload.index("&message")
-        payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment"
+        payload=payload[0:k]+"&message="+translator.translate(result,dest=sourceLanguage).text+ "&src.name=chatbotpayment"
 
-    elif c[0]=='You':
+    elif resultArray[0]=='You':
 
-        if 'water' in c:
+        if 'water' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Water_Sewerage_bills.pdf%22%7D&src.name=chatbotpayment'
 
-        elif 'trade' in c:
+        elif 'trade' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Trade_license_bills.pdf%22%7D&src.name=chatbotpayment'
 
-        elif 'property' in c:
+        elif 'property' in resultArray:
             payload = 'channel=whatsapp&source=917834811114&destination='+destination+'&message=%7B%22type%22%3A%22file%22%2C%22url%22%3A%22https%3A//www.buildquickbots.com/whatsapp/media/sample/pdf/sample01.pdf%22%2C%22caption%22%3A%22%22%2C%22filename%22%3A%22Property_Tax_bills.pdf%22%7D&src.name=chatbotpayment'
 
-        #else:
-            
-        #    k=payload.index("&message")
-        #    payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment"
-
+       
         response = requests.request("POST", url, headers=headers, data = payload)
 
         k=payload.index("&message")
-        payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment"
+        payload=payload[0:k]+"&message="+translator.translate(result,dest=sourceLanguage).text+ "&src.name=chatbotpayment"
 
-        
-
-        
-   
-
-   
-        
     else:
-        
-        
+     
         k=payload.index("&message")
-        payload=payload[0:k]+"&message="+translator.translate(res,dest=src1).text+ "&src.name=chatbotpayment"
+        payload=payload[0:k]+"&message="+translator.translate(result,dest=sourceLanguage).text+ "&src.name=chatbotpayment"
     
          
     
-    if c[0]!="Showing":
+    if resultArray[0]!="Showing":
         payload=payload.encode('utf-8')
 
-        
-    #if c[0]!="Welcome":    
     response = requests.request("POST", url, headers=headers, data = payload)
 
     return ""
 
-
-
 app_vf.run()
-    
