@@ -1,0 +1,74 @@
+service: case-management
+mailbox: "test12asase@gmail.com"
+mappings:
+  - version: 1.0
+    description: Create Home Isolation Cases
+    action: "DATA_UPLOAD"
+    additionalFields:
+      uriPaths: /case-management/create-case/_upload
+    subject: ["Isolation Case Manager On-Boarding Details", "Create Home Isolation Cases"]
+    roles: ["ISOLATION_CASE_ADMIN"]
+    successResponse: |
+      Greetings,
+      Thank you for submitting the details of the home isolated citizens, we have checked the data that you have shared and status for all the entries in have been updated in the file attached to this email.
+      Thanks.
+    errorResponse: |
+      Greetings,
+      Thank you for submitting the details of the home isolated citizens, unfortunately there was a server error and the process has FAILED.
+      Error occured was as follows,
+      ${error}
+      Thanks.
+
+  - version: 1.0
+    description: Add health status of isolated cases
+    action: "DATA_UPLOAD"
+    additionalFields:
+      uriPaths: /case-management/health-details-collect/_upload
+    subject: ["Health Details Collector On-Boarding Details", "Daily Report to Health Details Collector"]
+    roles: ["ISOLATION_CASE_ADMIN"]
+    successResponse: |
+      Greetings,
+      Thank you for submitting the health details of the home isolated citizens, we have checked the data that you have shared and status for all the entries in have been updated in the file attached to this email.
+      Thanks.
+    errorResponse: |
+      Greetings,
+      Thank you for submitting the health details of the home isolated citizens, unfortunately there was a server error and the process has FAILED.
+      Error occured was as follows,
+      ${error}
+      Thanks.
+
+  - version: 1.0
+    description: Create case manager users
+    action: "DATA_UPLOAD"
+    additionalFields:
+      uriPaths: /case-management/create-case-manager/_upload
+    subject: ["On-boarding Isolation Case Manager"]
+    roles: ["ISOLATION_CASE_SUPERUSER"]
+    successResponse: |
+      Greetings,
+      Thank you for submitting the details for creation of isolation case managers, we have checked the data that you have shared and status for all the entries in have been updated in the file attached to this email.
+      Thanks.
+    errorResponse: |
+      Greetings,
+      Thank you for submitting the details for creation of isolation case managers, unfortunately there was a server error and the process has FAILED.
+      Error occured was as follows,
+      ${error}
+      Thanks.
+
+  - version: 1.0
+    description: Create health details collector users
+    action: "DATA_UPLOAD"
+    additionalFields:
+      uriPaths: /case-management/create-health-details-collector/_upload
+    subject: ["On-boarding Isolation Health Details Collectors"]
+    roles: ["ISOLATION_CASE_ADMIN"]
+    successResponse: |
+      Greetings,
+      Thank you for submitting the details for creation of health detail collectors, we have checked the data that you have shared and status for all the entries in have been updated in the file attached to this email.
+      Thanks.
+    errorResponse: |
+      Greetings,
+      Thank you for submitting the details for creation of health detail collectors, unfortunately there was a server error and the process has FAILED.
+      Error occured was as follows,
+      ${error}
+      Thanks.
