@@ -82,11 +82,12 @@ public class WorkflowQueryBuilder {
             builder.append(" and pi.businessId IN (").append(createQuery(businessIds)).append(")");
             addToPreparedStatement(preparedStmtList, businessIds);
         }
-        
 
-        if(!StringUtils.isEmpty(criteria.getBusinessService())){
-        	builder.append(" AND pi.businessservice =? ");
-            preparedStmtList.add(criteria.getBusinessService());
+
+        List<String> businessServiceNames = criteria.getBusinessService();
+        if(!CollectionUtils.isEmpty(businessServiceNames)){
+            builder.append(" AND pi.businessservice IN ( ").append(createQuery(businessServiceNames)).append(" )");
+            addToPreparedStatement(preparedStmtList, businessServiceNames);
         }
 
         List<String> tenantSpecificStatuses = criteria.getTenantSpecifiStatus();
@@ -150,9 +151,10 @@ public class WorkflowQueryBuilder {
             preparedStmtList.add(criteria.getTenantId());
         }
 
-        if(!StringUtils.isEmpty(criteria.getBusinessService())){
-            with_query_builder.append(" AND pi_outer.businessservice =? ");
-            preparedStmtList.add(criteria.getBusinessService());
+        List<String> businessServiceNames = criteria.getBusinessService();
+        if(!CollectionUtils.isEmpty(businessServiceNames)){
+            with_query_builder.append(" AND pi_outer.businessservice IN ( ").append(createQuery(businessServiceNames)).append(" )");
+            addToPreparedStatement(preparedStmtList, businessServiceNames);
         }
 
         if(!StringUtils.isEmpty(criteria.getModuleName())){
@@ -269,9 +271,10 @@ public class WorkflowQueryBuilder {
             preparedStmtList.add(criteria.getTenantId());
         }
 
-        if(!StringUtils.isEmpty(criteria.getBusinessService())){
-            with_query_builder.append(" AND pi_outer.businessservice =? ");
-            preparedStmtList.add(criteria.getBusinessService());
+        List<String> businessServiceNames = criteria.getBusinessService();
+        if(!CollectionUtils.isEmpty(businessServiceNames)){
+            with_query_builder.append(" AND pi_outer.businessservice IN ( ").append(createQuery(businessServiceNames)).append(" )");
+            addToPreparedStatement(preparedStmtList, businessServiceNames);
         }
 
         with_query_builder.append(" ORDER BY pi_outer.lastModifiedTime DESC ");

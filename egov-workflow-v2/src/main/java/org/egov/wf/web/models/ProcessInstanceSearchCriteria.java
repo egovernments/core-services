@@ -42,7 +42,7 @@ public class ProcessInstanceSearchCriteria {
     private Integer limit;
 
     @JsonProperty("businessService")
-    private String businessService;
+    private List<String> businessService;
 
     @JsonProperty("moduleName")
     private String moduleName;
