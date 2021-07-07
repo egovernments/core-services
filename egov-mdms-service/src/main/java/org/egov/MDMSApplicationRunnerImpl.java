@@ -2,6 +2,8 @@ package org.egov;
 
 import java.io.InputStream;
 import java.lang.reflect.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,8 @@ import javax.annotation.PostConstruct;
 import com.fasterxml.jackson.core.type.*;
 import org.apache.commons.io.*;
 import org.egov.infra.mdms.utils.MDMSConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
@@ -160,7 +164,7 @@ public class MDMSApplicationRunnerImpl {
         }
     }
 
-    public void readMdmsConfigFiles(String masterConfigUrl) {
+    public void readMdmsConfigFiles(String masterConfigUrl) throws Exception {
         log.info("Loading master configs from: " + masterConfigUrl);
         Resource resource = resourceLoader.getResource(masterConfigUrl);
         InputStream inputStream = null;
@@ -170,6 +174,7 @@ public class MDMSApplicationRunnerImpl {
             });
         } catch (IOException e) {
             log.error("Exception while fetching service map for: ", e);
+            log.error("Incorrect format of the file: " + masterConfigUrl);
         } finally {
             IOUtils.closeQuietly(inputStream);
         }
@@ -192,7 +197,6 @@ public class MDMSApplicationRunnerImpl {
         }
         return isMergeAllowed;
     }
-
 
     public static Map<String, Map<String, Map<String, JSONArray>>> getTenantMap() {
         return tenantMap;
