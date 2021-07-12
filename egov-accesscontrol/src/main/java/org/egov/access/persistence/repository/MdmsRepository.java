@@ -66,7 +66,52 @@ public class MdmsRepository {
      * @return Map of roles to URIs authorized
      */
     @Cacheable(value = "roleActions", sync = true)
-    public  Map<String, ActionContainer> fetchRoleActionData(String tenantId){
+    public  Map<String, ActionContainer> fetchRoleActionData(String tenantId) {
+        Map<String, Map<String, List>> response = getMDMSActionData(tenantId, actionFilter);
+
+        return transformMdmsResponse(response);
+    }
+
+    @Cacheable(value = "roleActionsMapping", sync = true)
+    public  Map<String, Map<Boolean, List<Action>>> fetchRoleActionMapping(String tenantId) {
+        Map<String, Map<String, List>> response = getMDMSActionData(tenantId, null);
+
+        return transformMdmsResponseForActions(response);
+    }
+
+    private Map<String, Map<Boolean, List<Action>>> transformMdmsResponseForActions(Map<String, Map<String, List>> rawResponse) {
+
+        RoleAction[] roleActions = objectMapper.convertValue(rawResponse.get(roleActionModule).get(
+                roleActionMaster), RoleAction[].class);
+        Action[] actions = objectMapper.convertValue(rawResponse.get(actionModule).get(
+                actionMaster), Action[].class);
+
+
+        Map<Long,List<Action>> actionMap =
+                Arrays.stream(actions).collect(Collectors.groupingBy(Action::getId) );
+
+        Map<String, Map<Boolean, List<Action>>> finalMap = new HashMap<>();
+
+        for(RoleAction roleAction : roleActions){
+            if(actionMap.containsKey(roleAction.getActionId())){
+                if(!finalMap.containsKey(roleAction.getRoleCode())) {
+                    Map<Boolean, List<Action>> map = new HashMap<>();
+                    map.put(true, new LinkedList<>());
+                    map.put(false, new LinkedList<>());
+                    finalMap.put(roleAction.getRoleCode(), map);
+                }
+
+                Map<Boolean, List<Action>> container = finalMap.get(roleAction.getRoleCode());
+                Action currentAction = actionMap.get(roleAction.getActionId()).get(0);
+
+                boolean isEnabled = currentAction.isEnabled() || false;
+                container.get(isEnabled).add(currentAction);
+            }
+        }
+        return finalMap;
+    }
+
+    private Map<String, Map<String, List>> getMDMSActionData(String tenantId, String actionFilter) {
         List<ModuleDetail> moduleDetail = new ArrayList<ModuleDetail>();
         RequestInfo requestInfo = new RequestInfo();
 
@@ -97,17 +142,7 @@ public class MdmsRepository {
             throw new CustomException("DATA_NOT_AVAILABLE", "Data not available for this tenant");
 
 
-        return transformMdmsResponse(response);
-
-//        Map<String, List<String>> map = Arrays.stream(roleActions)
-//                .filter( roleAction -> actionMap.containsKey(roleAction.getActionId()) )
-//                .collect(Collectors.groupingBy(
-//                        RoleAction::getRoleCode,
-//                        Collectors.mapping(roleAction -> actionMap.get(roleAction.getActionId()).get(0).getUrl(),
-//                                Collectors.toList())));
-//
-//        return map;
-
+        return response;
     }
 
     private Map<String, ActionContainer> transformMdmsResponse(Map<String, Map<String, List>> rawResponse){

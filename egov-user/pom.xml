@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
+  
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.egov</groupId>
     <artifactId>egov-user</artifactId>
-    <version>1.2.4-SNAPSHOT</version>
+    <version>1.2.5-SNAPSHOT</version>
     <name>egov-user</name>
     <description>egov-user microservice</description>
     <parent>
@@ -20,8 +21,25 @@
         <joda-time-version>2.9.6</joda-time-version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <lombok.version>1.16.12</lombok.version>
+         <cache2k-version>1.2.0.Final</cache2k-version>
     </properties>
     <dependencies>
+	   <dependency>
+			<groupId>org.cache2k</groupId>
+			<artifactId>cache2k-api</artifactId>
+			<version>${cache2k-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.cache2k</groupId>
+			<artifactId>cache2k-core</artifactId>
+			<version>${cache2k-version}</version>
+			<scope>runtime</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.cache2k</groupId>
+			<artifactId>cache2k-spring</artifactId>
+			<version>${cache2k-version}</version>
+		</dependency>
         <dependency>
             <groupId>org.egov.services</groupId>
             <artifactId>tracer</artifactId>

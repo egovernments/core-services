@@ -42,13 +42,15 @@ package org.egov.boundary.domain.model;
 
 import java.util.List;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
+@EqualsAndHashCode
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
 public class BoundarySearchRequest {
 
 	private String tenantId;

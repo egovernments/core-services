@@ -85,11 +85,39 @@ public class ActionService {
 		
 	}
 	public List<Action> getAllMDMSActions(final ActionRequest actionRequest) throws JSONException, UnsupportedEncodingException{
-        
-		return actionRepository.getAllMDMSActions(actionRequest);
+
+		Map<String, Map<Boolean, List<Action>>> data = mdmsRepository.fetchRoleActionMapping(actionRequest.getTenantId());
+		List<Action> actions = getActionsForRole(data, actionRequest.getRoleCodes(), actionRequest.getEnabled());
+		return actions; //actionRepository.getAllMDMSActions(actionRequest);
 	}
 
-    /**
+	private List<Action> getActionsForRole(Map<String, Map<Boolean, List<Action>>> data, List<String> roleCodes, Boolean enabled) {
+		List<Action> actions = new LinkedList<>();
+		List<Long> actionIds = new LinkedList<>();
+
+		for (String role: roleCodes) {
+			if (data.containsKey(role)) {
+				List<Action> currentActions = new LinkedList<>();
+				if (enabled == null) {
+					currentActions.addAll(data.get(role).get(false));
+					currentActions.addAll(data.get(role).get(true));
+				} else {
+					currentActions.addAll(data.get(role).get(enabled));
+				}
+
+				for (Action a: currentActions) {
+					if (!actionIds.contains(a.getId())) {
+						actionIds.add(a.getId());
+						actions.add(a);
+					}
+				}
+			}
+		}
+
+		return actions;
+	}
+
+	/**
      * Authorize the request
      *
      * @param authorizeRequest URI and role to be authorized

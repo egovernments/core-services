@@ -96,6 +96,7 @@ public class ActionController {
 			return new ResponseEntity<>(errorResponses, HttpStatus.BAD_REQUEST);
 		
 		List<Action> actionList = actionService.getAllMDMSActions(actionRequest);
+
 		return getNewListSuccessResponse(actionRequest.getRequestInfo(), actionList);
 
 	}

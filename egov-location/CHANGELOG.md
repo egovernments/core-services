@@ -3,6 +3,10 @@
 # Changelog
 All notable changes to this module will be documented in this file.
 
+## 1.1.4 - 2021-07-12
+
+- Added Caching for MDMS Data for performance improvement
+
 ## 1.1.3 - 2021-05-11
 
 - Updated error handling

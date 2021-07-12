@@ -2,14 +2,17 @@ package org.egov.boundary;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.cache2k.extra.spring.SpringCache2kCacheManager;
 import org.egov.tracer.config.TracerConfiguration;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.servlet.support.SpringBootServletInitializer;
+import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
@@ -17,6 +20,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @Import({TracerConfiguration.class})
@@ -24,6 +28,9 @@ public class BoundaryApplication extends SpringBootServletInitializer {
 
 	@Value("${app.timezone}")
 	private String timeZone;
+
+	@Value("${cache.expiry.boundary.minutes:5}")
+	private long boundaryCacheExpiry;
 
 	@PostConstruct
 	public void initialize() {
@@ -67,6 +74,15 @@ public class BoundaryApplication extends SpringBootServletInitializer {
 		mapper.setTimeZone(TimeZone.getTimeZone(timeZone));
 		converter.setObjectMapper(mapper);
 		return converter;
+	}
+
+	@Bean
+	@Profile("!test")
+	public CacheManager cacheManager() {
+		return new SpringCache2kCacheManager("cache-" + hashCode())
+				.addCaches(b->b.name("cBoundariesByTenantAndHierarchyType").expireAfterWrite(boundaryCacheExpiry, TimeUnit.MINUTES).entryCapacity(250))
+				.addCaches(b->b.name("cBoundariesByIdsAndTypeAndNumberAndCodeAndTenant").expireAfterWrite(boundaryCacheExpiry, TimeUnit.MINUTES).entryCapacity(250))
+				.addCaches(b->b.name("mdmsCache").expireAfterWrite(boundaryCacheExpiry, TimeUnit.MINUTES).entryCapacity(250));
 	}
 
 }
