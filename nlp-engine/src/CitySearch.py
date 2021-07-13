@@ -31,13 +31,16 @@ for data in citiesData:
     cities = cities + data['cities']
 
 def findCity(a):
+    
+    #PREDICT THE CITY NAME FROM THE INPUT USING FUZZY LOGIC.
+
     a= [i for i in a if i not in punct]
     a= ''.join(a)
     a=a.lower()
 
     max1=0
     city=[[0,"Please try again"]]
-    #result=list()
+    
     
     for j in master:
 
@@ -47,8 +50,8 @@ def findCity(a):
         elif fuzz.ratio(a,j["cityName"].lower())>=50 :
             max1=max(max1,fuzz.ratio(a,j["cityName"].lower()))
             city.append([fuzz.ratio(a,j["cityName"].lower()),j["tenantId"]])
-            #result.append(j["CityName"].lower())
-                
+            
+    #FIND IF IT IS AN EXACT MATCH.            
                 
     exact_match='false'
     if max1==100:
@@ -62,4 +65,4 @@ def findCity(a):
         final_answer.append(k[len(k)-1-i][1])
     
     return (final_answer,max1,exact_match)
-    #return (k,max1,exact_match)
+    
