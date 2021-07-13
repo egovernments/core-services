@@ -1,0 +1,41 @@
+WELCOME_MESSAGE = "Welcome to the *DIGIT* platform! You can now scan your documents online and get them verified.\nGo ahead and upload an image of your document!"
+PREFIX = 'channel=whatsapp&source=917834811114&destination='
+CATEGORY = '&message=Please%20mention%20a%20category'
+SRC_NAME = '&src.name=LocalitySearch'
+GUPSHUP_URL = "https://api.gupshup.io/sm/api/v1/msg"
+MSEVA = "Type 'mseva' to go back to the main menu"
+MESSAGE_TOKEN = "&message="
+
+AADHAR_FORMAT = "[0-9]{4}\\s[0-9]{4}\\s[0-9]{4}"
+PAN_FORMAT = "[A-Z]{5}[0-9]{4}[A-Z]{1}"
+AADHAR = "Aadhar"
+PAN = "PAN"
+NUMBER = "number"
+DOB = "dob"
+DRIVING_LICENSE = "Driving License- Punjab"
+DOB_FORMAT = "[0-9][0-9][\/\-][0-9][0-9][\/\-]\d{4}"
+
+DOB_FINAL = "[0-9][0-9][\/\-][0-9][0-9][\/\-]\d{4}$"
+
+GOVT = "GOVT."
+INCOME = "INCOME"
+TAX = "TAX"
+DEPARTMENT = "DEPARTMENT"
+GOVERNMENT = "GOVERNMENT"
+INDIA = "INDIA"
+DEPT = "DEPT."
+NAME = "name"
+
+ISSUE_DATE = "issued on "
+SDW = "s/d/w of "
+MALE = "male"
+FEMALE = "female"
+HEADER = "The following information has been captured: \n\n"
+CATEGORY_HEAD = "Category: "
+NAME_HEAD = "\n\nName: "
+ID_HEAD = "\n\nID No. "
+DOB_HEAD = "\n\nDOB: "
+DOI_HEAD = "\n\nDOI: "
+SDW_HEAD = "\n\nS/D/W of: "
+FATHER_NAME = "\n\nFather's name: "
+GENDER_HEAD = "\n\nGender: "
